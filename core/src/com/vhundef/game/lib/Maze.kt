@@ -77,6 +77,7 @@ class Maze(val width: Int, val height: Int) {
     }
 
     fun draw(batch: SpriteBatch) {
+        batch.begin()
         val rectSize = Gdx.graphics.width / width
         val rectYOffset = (Gdx.graphics.height - rectSize * height) - (rectSize * height) / 2
         for (y in 0 until height) {
@@ -89,7 +90,32 @@ class Maze(val width: Int, val height: Int) {
                     rects[x][y].color = Color.CORAL
                 } else if (data[x][y] == Cell.SPACE)
                     rects[x][y].color = Color.LIGHT_GRAY
+                else {
+                    rects[x][y].color = Color.GREEN
+                }
                 rects[x][y].draw(batch, 1f)
+            }
+        }
+        batch.end()
+    }
+
+    fun checkTile(x: Int, y: Int) {
+        println("Got touch at X: $x Y: $y")
+
+        for (i in 0 until height) {
+            for (j in 0 until width) {
+                if (x >= rects[i][j].x && x <= rects[i][j].x + rects[i][j].width) {
+                    println("X check: Passed")
+                    if (y >= rects[i][j].y && y <= rects[i][j].y + rects[i][j].height) {
+                        println("Y check: Passed")
+                        if (data[i][(width - 1) - j] == Cell.SPACE) {
+                            data[i][(width - 1) - j] = Cell.VISITED
+                            println("ALL OK")
+                            Gdx.graphics.requestRendering()
+                        } else
+                            println(data[i][j])
+                    }
+                }
             }
         }
     }
