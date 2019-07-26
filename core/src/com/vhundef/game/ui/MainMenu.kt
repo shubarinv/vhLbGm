@@ -17,10 +17,9 @@ import com.vhundef.game.MyGame
 
 class MainMenu(private val game: Game) : Screen {
 
-    private val stage: Stage
+    private val stage: Stage = Stage(ScreenViewport())
 
     init {
-        stage = Stage(ScreenViewport())
 
         val title = Label("Thanks for testing", MyGame.gameSkin)
         title.setFontScale(8f)

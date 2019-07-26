@@ -80,7 +80,7 @@ class GameScreen(game: Game) : Screen, InputProcessor {
     }
 
     override fun touchDown(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
-        maze.checkTile(screenX, screenY)
+        //maze.checkTile(screenX, screenY)
         return true
     }
 
@@ -89,8 +89,8 @@ class GameScreen(game: Game) : Screen, InputProcessor {
     }
 
     override fun touchDragged(screenX: Int, screenY: Int, pointer: Int): Boolean {
-        // TODO Auto-generated method stub
-        return false
+        maze.checkTile(screenX, screenY)
+        return true
     }
 
     override fun mouseMoved(screenX: Int, screenY: Int): Boolean {
