@@ -95,11 +95,11 @@ class Maze(val width: Int, val height: Int) {
                 rects[x][y].width = (rectSize).toFloat()
                 rects[x][y].height = (rectSize).toFloat()
                 if (data[x][y] == Cell.WALL) {
-                    rects[x][y].color = Color.CORAL
-                } else if (data[x][y] == Cell.SPACE)
                     rects[x][y].color = Color.LIGHT_GRAY
+                } else if (data[x][y] == Cell.SPACE)
+                    rects[x][y].color = Color.DARK_GRAY
                 else if (data[x][y] == Cell.FOCUS)
-                    rects[x][y].color = Color.BLACK
+                    rects[x][y].color = Color(0f, 1f, 0.5f, 1f)
                 else {
                     rects[x][y].color = Color.GREEN
                 }
