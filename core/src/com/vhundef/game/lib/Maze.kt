@@ -10,7 +10,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import kotlin.math.abs
 
 
-class Maze(val width: Int, val height: Int) {
+class Maze(var width: Int, var height: Int) {
 
     private enum class Cell {
         WALL, SPACE, VISITED, FOCUS
@@ -27,11 +27,6 @@ class Maze(val width: Int, val height: Int) {
     private val rand = java.util.Random()
 
     init {
-        if (width % 2 == 0)
-            width + 1
-        if (height % 2 == 0)
-            height + 1
-
         generate()
     }
 
@@ -59,7 +54,13 @@ class Maze(val width: Int, val height: Int) {
 
     }
 
-    fun generate() {
+    private fun generate() {
+        if (width % 2 == 0) {
+            println("FFS width $width")
+        }
+        if (height % 2 == 0) {
+            println("FFS height $height")
+        }
         for (x in 0 until width) {
             for (y in 0 until height) {
                 data[x][y] = Cell.WALL

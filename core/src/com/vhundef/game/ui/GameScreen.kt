@@ -24,18 +24,16 @@ class GameScreen(val game: Game, val level: Int) : Screen, InputProcessor {
 
     private var touch = TouchInfo()
     private val stage: Stage
-    var maze = Maze(4, 4)
+    var maze: Maze? = null
     private var batch: SpriteBatch? = null
 
     init {
         batch = SpriteBatch()
         stage = Stage(ScreenViewport() as Viewport?)
-        if (level % 4 == 0) {
-            maze = Maze(11 + level / 4, 11 + level / 4)
-        } else if (level > 4) {
-            maze = Maze(11 + level / 4 + 1, 11 + level / 4 + 1)
+        if ((11 + level / 4) % 2 == 0) {
+            maze = Maze(12 + level / 4, 12 + level / 4)
         } else {
-            maze = Maze(11, 11)
+            maze = Maze(11 + level / 4, 11 + level / 4)
         }
         Gdx.input.inputProcessor = this
         Gdx.graphics.isContinuousRendering = false
@@ -46,9 +44,9 @@ class GameScreen(val game: Game, val level: Int) : Screen, InputProcessor {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
         stage.act()
         stage.draw()
-        maze.draw(batch!!)
-        if (maze.done)
-            game.screen = LevelDoneScreen(game, maze.visitedTiles)
+        maze!!.draw(batch!!)
+        if (maze!!.done)
+            game.screen = LevelDoneScreen(game, maze!!.visitedTiles)
         println("REDRAW")
     }
 
@@ -97,7 +95,7 @@ class GameScreen(val game: Game, val level: Int) : Screen, InputProcessor {
     }
 
     override fun touchDragged(screenX: Int, screenY: Int, pointer: Int): Boolean {
-        maze.checkTile(screenX, screenY)
+        maze!!.checkTile(screenX, screenY)
         return true
     }
 
