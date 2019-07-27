@@ -11,7 +11,11 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport
 import com.badlogic.gdx.utils.viewport.Viewport
 import com.vhundef.game.lib.Maze
 
-class GameScreen(game: Game) : Screen, InputProcessor {
+class GameScreen(val game: Game, val level: Int) : Screen, InputProcessor {
+    override fun show() {
+        assert(true)
+    }
+
     internal inner class TouchInfo {
         var touchX = 0f
         var touchY = 0f
@@ -26,13 +30,15 @@ class GameScreen(game: Game) : Screen, InputProcessor {
     init {
         batch = SpriteBatch()
         stage = Stage(ScreenViewport() as Viewport?)
-        maze = Maze(15, 15)
+        if (level % 4 == 0) {
+            maze = Maze(11 + level / 4, 11 + level / 4)
+        } else if (level > 4) {
+            maze = Maze(11 + level / 4 + 1, 11 + level / 4 + 1)
+        } else {
+            maze = Maze(11, 11)
+        }
         Gdx.input.inputProcessor = this
         Gdx.graphics.isContinuousRendering = false
-    }
-
-    override fun show() {
-        //   Gdx.input.inputProcessor = stage
     }
 
     override fun render(delta: Float) {
@@ -41,6 +47,8 @@ class GameScreen(game: Game) : Screen, InputProcessor {
         stage.act()
         stage.draw()
         maze.draw(batch!!)
+        if (maze.done)
+            game.screen = LevelDoneScreen(game, maze.visitedTiles)
         println("REDRAW")
     }
 

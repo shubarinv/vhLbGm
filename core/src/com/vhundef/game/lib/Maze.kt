@@ -7,12 +7,13 @@ package com.vhundef.game.lib
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import kotlin.math.abs
 
 
 class Maze(val width: Int, val height: Int) {
 
     private enum class Cell {
-        WALL, SPACE, VISITED
+        WALL, SPACE, VISITED, FOCUS
     }
 
     private val data = Array(width) { i ->
@@ -26,6 +27,11 @@ class Maze(val width: Int, val height: Int) {
     private val rand = java.util.Random()
 
     init {
+        if (width % 2 == 0)
+            width + 1
+        if (height % 2 == 0)
+            height + 1
+
         generate()
     }
 
@@ -74,6 +80,8 @@ class Maze(val width: Int, val height: Int) {
 
         data[2][1] = Cell.SPACE
         data[width - 3][height - 2] = Cell.SPACE
+
+        data[width - 3][height - 2] = Cell.FOCUS
     }
 
     fun draw(batch: SpriteBatch) {
@@ -90,6 +98,8 @@ class Maze(val width: Int, val height: Int) {
                     rects[x][y].color = Color.CORAL
                 } else if (data[x][y] == Cell.SPACE)
                     rects[x][y].color = Color.LIGHT_GRAY
+                else if (data[x][y] == Cell.FOCUS)
+                    rects[x][y].color = Color.BLACK
                 else {
                     rects[x][y].color = Color.GREEN
                 }
@@ -99,25 +109,62 @@ class Maze(val width: Int, val height: Int) {
         batch.end()
     }
 
+    var done = false
+    var visitedTiles = 0
+    var prevX = width - 2
+    var prevY = 0
+
     fun checkTile(x: Int, y: Int) {
         println("Got touch at X: $x Y: $y")
 
         for (i in 0 until height) {
             for (j in 0 until width) {
+                if (data[i][(width - 1) - j] == Cell.WALL)
+                    continue
                 if (x >= rects[i][j].x && x <= rects[i][j].x + rects[i][j].width) {
                     println("X check: Passed")
                     if (y >= rects[i][j].y && y <= rects[i][j].y + rects[i][j].height) {
                         println("Y check: Passed")
-                        if (data[i][(width - 1) - j] == Cell.SPACE) {
-                            data[i][(width - 1) - j] = Cell.VISITED
-                            println("ALL OK")
-                            Gdx.graphics.requestRendering()
-                        } else
-                            println(data[i][j])
+                        if (prevX == 0)
+                            prevX = i
+                        if (prevY == 0)
+                            prevY = j
+                        if (checkIfCanGo(i, j)) {
+                            println("CAN GO")
+                            if (data[i][(width - 1) - j] == Cell.SPACE) {
+                                data[i][(width - 1) - j] = Cell.FOCUS
+                                println("ALL OK")
+                                visitedTiles++
+                                data[prevX][(width - 1) - prevY] = Cell.VISITED
+                                prevX = i
+                                prevY = j
+                                Gdx.graphics.requestRendering()
+                                if (i == 2 && j == height - 2)
+                                    done = true
+                                return
+
+
+                            } else if (data[i][(width - 1) - j] == Cell.VISITED || data[i][(width - 1) - j] == Cell.FOCUS) {
+                                data[prevX][(width - 1) - prevY] = Cell.VISITED
+                                prevX = i
+                                prevY = j
+                                visitedTiles++
+                            }
+                        } else {
+                            println("NO Go prevX: $prevX X: $x")
+                            println("prevY: $prevY Y: $y")
+                        }
                     }
                 }
             }
         }
     }
 
+    private fun checkIfCanGo(curX: Int, curY: Int): Boolean {
+        if (abs(curX - prevX) == 1 && abs(curY - prevY) == 0)
+            return true
+        if (abs(curX - prevX) == 0 && abs(curY - prevY) == 1)
+            return true
+        return false
+    }
 }

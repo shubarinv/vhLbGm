@@ -13,23 +13,23 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton
 import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.viewport.ScreenViewport
 import com.vhundef.game.MyGame
+import com.vhundef.game.MyGame.level
 
-
-class MainMenu(private val game: Game) : Screen {
-
+class LevelDoneScreen(private val game: Game, private val visitedTiles: Int) : Screen {
     private val stage: Stage = Stage(ScreenViewport())
 
     init {
-
-        val title = Label("Thanks for testing\n(Da, ya znayu,\nchto shrift razmitiy)", MyGame.gameSkin)
+        var currLevel = MyGame.level
+        val title = Label("LEVEL $currLevel DONE\nused $visitedTiles tiles", MyGame.gameSkin)
         title.setFontScale(8f)
         title.setAlignment(Align.center)
         title.y = (Gdx.graphics.height * 2 / 3).toFloat()
         title.width = Gdx.graphics.width.toFloat()
         title.color = Color.BLACK
         stage.addActor(title)
+        MyGame.level += 1
 
-        val playButton = TextButton("New game", MyGame.gameSkin)
+        val playButton = TextButton("Next", MyGame.gameSkin)
 
         playButton.width = Gdx.graphics.width.toFloat()
         playButton.height = Gdx.graphics.height / 9f
@@ -38,7 +38,7 @@ class MainMenu(private val game: Game) : Screen {
         playButton.setPosition(0f, Gdx.graphics.height / 2 - playButton.height / 2)
         playButton.addListener(object : InputListener() {
             override fun touchUp(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int) {
-                game.screen = GameScreen(game, 1)
+                game.screen = GameScreen(game, level)
             }
 
             override fun touchDown(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int): Boolean {
@@ -47,29 +47,12 @@ class MainMenu(private val game: Game) : Screen {
         })
         stage.addActor(playButton)
 
-        val optionsButton = TextButton("Continue", MyGame.gameSkin)
-        optionsButton.width = Gdx.graphics.width.toFloat()
-        optionsButton.height = Gdx.graphics.height / 9f
-        optionsButton.color = Color.LIME
-        optionsButton.label.setFontScale(optionsButton.height / 25f)
-        optionsButton.setPosition(0f, Gdx.graphics.height / 2 - optionsButton.height * 1.6f)
-        optionsButton.addListener(object : InputListener() {
-            override fun touchUp(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int) {
-                //   game.screen = OptionScreen(game)
-            }
-
-            override fun touchDown(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int): Boolean {
-                return true
-            }
-        })
-        stage.addActor(optionsButton)
-
         val quitButton = TextButton("Quit", MyGame.gameSkin)
         quitButton.width = Gdx.graphics.width.toFloat()
         quitButton.height = Gdx.graphics.height / 9f
         quitButton.color = Color.LIME
         quitButton.label.setFontScale(quitButton.height / 25f)
-        quitButton.setPosition(0f, Gdx.graphics.height / 2 - optionsButton.height * 2.7f)
+        quitButton.setPosition(0f, Gdx.graphics.height / 2 - quitButton.height * 2.7f)
         quitButton.addListener(object : InputListener() {
             override fun touchUp(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int) {
                 Gdx.app.exit()

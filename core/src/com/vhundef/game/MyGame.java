@@ -5,9 +5,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.vhundef.game.ui.MainMenu;
+import org.jetbrains.annotations.NotNull;
 
 public class MyGame extends Game {
     static public Skin gameSkin;
+    @NotNull
+    public static int level = 1;
     private SpriteBatch batch;
 
     @Override
