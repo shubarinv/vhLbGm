@@ -81,7 +81,7 @@ class MainMenu(private val game: Game) : Screen {
         })
         stage.addActor(quitButton)
 
-        val thx = Label("Спасибо за тест!\nV0.2", MyGame.gameSkin)
+        val thx = Label("Спасибо за тест!\nV0.3", MyGame.gameSkin)
         thx.setFontScale(3f)
         thx.setAlignment(Align.center)
         thx.y = (100f).toFloat()
