@@ -21,7 +21,7 @@ class MainMenu(private val game: Game) : Screen {
 
     init {
 
-        val title = Label("Спасибо за тест!", MyGame.gameSkin)
+        val title = Label("Нету тут пока что названия", MyGame.gameSkin)
         title.setFontScale(3f)
         title.setAlignment(Align.center)
         title.y = (Gdx.graphics.height * 2 / 3).toFloat()
@@ -80,6 +80,14 @@ class MainMenu(private val game: Game) : Screen {
             }
         })
         stage.addActor(quitButton)
+
+        val thx = Label("Спасибо за тест!\nV0.2", MyGame.gameSkin)
+        thx.setFontScale(3f)
+        thx.setAlignment(Align.center)
+        thx.y = (100f).toFloat()
+        thx.width = Gdx.graphics.width.toFloat()
+        thx.color = Color.BLACK
+        stage.addActor(thx)
     }
 
     override fun show() {
