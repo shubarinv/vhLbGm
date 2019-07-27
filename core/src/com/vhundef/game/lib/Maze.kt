@@ -17,11 +17,11 @@ class Maze(var width: Int, var height: Int) {
     }
 
     private val data = Array(width) { i ->
-        Array<Cell>(height) { i -> Cell.WALL }
+        Array(height) { i -> Cell.WALL }
     }
 
     private val rects = Array(width) { i ->
-        Array<Rectangle>(height) { i -> Rectangle(1f, 1f, 1f, 1f, Color.WHITE) }
+        Array<Rectangle>(height) { j -> Rectangle(1f, 1f, 1f, 1f, Color.WHITE) }
     }
 
     private val rand = java.util.Random()
@@ -66,7 +66,6 @@ class Maze(var width: Int, var height: Int) {
                 data[x][y] = Cell.WALL
             }
         }
-
         for (x in 0 until width) {
             data[x][0] = Cell.SPACE
             data[x][height - 1] = Cell.SPACE
@@ -75,6 +74,8 @@ class Maze(var width: Int, var height: Int) {
             data[0][y] = Cell.SPACE
             data[width - 1][y] = Cell.SPACE
         }
+        data[1][0] = Cell.WALL
+        data[3][0] = Cell.WALL
 
         data[2][2] = Cell.SPACE
         carve(2, 2)
@@ -95,14 +96,11 @@ class Maze(var width: Int, var height: Int) {
                 rects[x][y].y = rectYOffset + (y * rectSize).toFloat()
                 rects[x][y].width = (rectSize).toFloat()
                 rects[x][y].height = (rectSize).toFloat()
-                if (data[x][y] == Cell.WALL) {
-                    rects[x][y].color = Color.LIGHT_GRAY
-                } else if (data[x][y] == Cell.SPACE)
-                    rects[x][y].color = Color.DARK_GRAY
-                else if (data[x][y] == Cell.FOCUS)
-                    rects[x][y].color = Color(0f, 1f, 0.5f, 1f)
-                else {
-                    rects[x][y].color = Color.GREEN
+                when {
+                    data[x][y] == Cell.WALL -> rects[x][y].color = Color.LIGHT_GRAY
+                    data[x][y] == Cell.SPACE -> rects[x][y].color = Color.DARK_GRAY
+                    data[x][y] == Cell.FOCUS -> rects[x][y].color = Color(0f, 1f, 0.5f, 1f)
+                    else -> rects[x][y].color = Color.GREEN
                 }
                 rects[x][y].draw(batch, 1f)
             }
@@ -112,7 +110,7 @@ class Maze(var width: Int, var height: Int) {
 
     var done = false
     var visitedTiles = 0
-    var prevX = 0
+    var prevX = width - 3
     var prevY = 0
 
     fun checkTile(x: Int, y: Int) {
@@ -126,10 +124,6 @@ class Maze(var width: Int, var height: Int) {
                     println("X check: Passed")
                     if (y >= rects[i][j].y && y <= rects[i][j].y + rects[i][j].height) {
                         println("Y check: Passed")
-                        if (prevX == 0)
-                            prevX = i
-                        if (prevY == 0)
-                            prevY = j
                         if (checkIfCanGo(i, j)) {
                             println("CAN GO")
                             if (data[i][(width - 1) - j] == Cell.SPACE) {
