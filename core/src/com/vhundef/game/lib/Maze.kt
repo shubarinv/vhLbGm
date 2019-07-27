@@ -81,7 +81,7 @@ class Maze(val width: Int, val height: Int) {
         data[2][1] = Cell.SPACE
         data[width - 3][height - 2] = Cell.SPACE
 
-        data[width - 3][height - 2] = Cell.FOCUS
+        //  data[width - 3][height - 2] = Cell.FOCUS
     }
 
     fun draw(batch: SpriteBatch) {
@@ -111,7 +111,7 @@ class Maze(val width: Int, val height: Int) {
 
     var done = false
     var visitedTiles = 0
-    var prevX = width - 2
+    var prevX = 0
     var prevY = 0
 
     fun checkTile(x: Int, y: Int) {
