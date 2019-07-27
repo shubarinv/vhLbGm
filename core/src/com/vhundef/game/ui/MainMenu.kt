@@ -21,8 +21,8 @@ class MainMenu(private val game: Game) : Screen {
 
     init {
 
-        val title = Label("Thanks for testing\n(Da, ya znayu,\nchto shrift razmitiy)", MyGame.gameSkin)
-        title.setFontScale(8f)
+        val title = Label("Спасибо за тест!", MyGame.gameSkin)
+        title.setFontScale(3f)
         title.setAlignment(Align.center)
         title.y = (Gdx.graphics.height * 2 / 3).toFloat()
         title.width = Gdx.graphics.width.toFloat()
@@ -34,7 +34,7 @@ class MainMenu(private val game: Game) : Screen {
         playButton.width = Gdx.graphics.width.toFloat()
         playButton.height = Gdx.graphics.height / 9f
         playButton.color = Color.LIME
-        playButton.label.setFontScale(playButton.height / 25f)
+        playButton.label.setFontScale(playButton.label.width / 30f)
         playButton.setPosition(0f, Gdx.graphics.height / 2 - playButton.height / 2)
         playButton.addListener(object : InputListener() {
             override fun touchUp(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int) {
@@ -51,7 +51,7 @@ class MainMenu(private val game: Game) : Screen {
         optionsButton.width = Gdx.graphics.width.toFloat()
         optionsButton.height = Gdx.graphics.height / 9f
         optionsButton.color = Color.LIME
-        optionsButton.label.setFontScale(optionsButton.height / 25f)
+        optionsButton.label.setFontScale(playButton.label.fontScaleX)
         optionsButton.setPosition(0f, Gdx.graphics.height / 2 - optionsButton.height * 1.6f)
         optionsButton.addListener(object : InputListener() {
             override fun touchUp(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int) {
@@ -68,7 +68,7 @@ class MainMenu(private val game: Game) : Screen {
         quitButton.width = Gdx.graphics.width.toFloat()
         quitButton.height = Gdx.graphics.height / 9f
         quitButton.color = Color.LIME
-        quitButton.label.setFontScale(quitButton.height / 25f)
+        quitButton.label.setFontScale(optionsButton.label.fontScaleX)
         quitButton.setPosition(0f, Gdx.graphics.height / 2 - optionsButton.height * 2.7f)
         quitButton.addListener(object : InputListener() {
             override fun touchUp(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int) {

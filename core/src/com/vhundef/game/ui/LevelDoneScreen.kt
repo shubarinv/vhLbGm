@@ -21,7 +21,7 @@ class LevelDoneScreen(private val game: Game, private val visitedTiles: Int) : S
     init {
         var currLevel = MyGame.level
         val title = Label("LEVEL $currLevel DONE\nused $visitedTiles tiles", MyGame.gameSkin)
-        title.setFontScale(8f)
+        title.setFontScale(4.5f)
         title.setAlignment(Align.center)
         title.y = (Gdx.graphics.height * 2 / 3).toFloat()
         title.width = Gdx.graphics.width.toFloat()
@@ -34,8 +34,8 @@ class LevelDoneScreen(private val game: Game, private val visitedTiles: Int) : S
         playButton.width = Gdx.graphics.width.toFloat()
         playButton.height = Gdx.graphics.height / 9f
         playButton.color = Color.LIME
-        playButton.label.setFontScale(playButton.height / 25f)
-        playButton.setPosition(0f, Gdx.graphics.height / 2 - playButton.height / 2)
+        playButton.label.setFontScale(3.5f)
+        playButton.setPosition(0f, Gdx.graphics.height / 2 - playButton.height * 1.6f)
         playButton.addListener(object : InputListener() {
             override fun touchUp(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int) {
                 game.screen = GameScreen(game, level)
@@ -51,7 +51,7 @@ class LevelDoneScreen(private val game: Game, private val visitedTiles: Int) : S
         quitButton.width = Gdx.graphics.width.toFloat()
         quitButton.height = Gdx.graphics.height / 9f
         quitButton.color = Color.LIME
-        quitButton.label.setFontScale(quitButton.height / 25f)
+        quitButton.label.setFontScale(3.5f)
         quitButton.setPosition(0f, Gdx.graphics.height / 2 - quitButton.height * 2.7f)
         quitButton.addListener(object : InputListener() {
             override fun touchUp(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int) {

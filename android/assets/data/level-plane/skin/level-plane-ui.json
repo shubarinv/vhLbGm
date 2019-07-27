@@ -1,13 +1,13 @@
 {
   com.badlogic.gdx.graphics.g2d.BitmapFont: {
     font: {
-      file: font-export.fnt
+      file: openSans.fnt
     }
     subtitle: {
-      file: font-subtitle-export.fnt
+      file: openSans.fnt
     }
     title: {
-      file: font-title-export.fnt
+      file: openSans.fnt
     }
   }
   com.badlogic.gdx.graphics.Color: {
