@@ -30,11 +30,12 @@ class GameScreen(val game: Game, val level: Int) : Screen, InputProcessor {
     init {
         batch = SpriteBatch()
         stage = Stage(ScreenViewport() as Viewport?)
-        if ((11 + level / 4) % 2 == 0) {
-            maze = Maze(12 + level / 4, 12 + level / 4)
+        maze = if ((11 + level / 3) % 2 == 0) {
+            Maze(12 + level / 3, 12 + level / 3)
         } else {
-            maze = Maze(11 + level / 4, 11 + level / 4)
+            Maze(11 + level / 3, 11 + level / 3)
         }
+        maze!!.drawEnd(stage)
         Gdx.input.inputProcessor = this
         Gdx.graphics.isContinuousRendering = false
     }

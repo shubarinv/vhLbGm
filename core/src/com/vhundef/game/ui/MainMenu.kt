@@ -34,7 +34,7 @@ class MainMenu(private val game: Game) : Screen {
         playButton.width = Gdx.graphics.width.toFloat()
         playButton.height = Gdx.graphics.height / 9f
         playButton.color = Color.LIME
-        playButton.label.setFontScale(playButton.label.width / 30f)
+        playButton.label.setFontScale(playButton.label.width / 35f)
         playButton.setPosition(0f, Gdx.graphics.height / 2 - playButton.height / 2)
         playButton.addListener(object : InputListener() {
             override fun touchUp(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int) {
@@ -82,7 +82,7 @@ class MainMenu(private val game: Game) : Screen {
         stage.addActor(quitButton)
 
         val thx = Label("Спасибо за тест!\nV0.3", MyGame.gameSkin)
-        thx.setFontScale(3f)
+        thx.setFontScale((Gdx.graphics.height / 3f) / 400f)
         thx.setAlignment(Align.center)
         thx.y = (100f).toFloat()
         thx.width = Gdx.graphics.width.toFloat()
