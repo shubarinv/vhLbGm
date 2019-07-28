@@ -15,10 +15,10 @@ jobs:
             - cp -r licenses/. $ANDROID_HOME/licenses
       - run:
           name: Download Dependencies
-          command: ./gradlew androidDependencies
+          command: sudo ./gradlew androidDependencies
       - run:
           name: Build assembleDebug
-          command: ./gradlew assembleDebug
+          command: sudo ./gradlew assembleDebug
       - store_artifacts:
-          path: TeamCode/build/outputs/apk
+          path: android/build/outputs/apk
           destination: apk
