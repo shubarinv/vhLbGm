@@ -11,13 +11,14 @@ import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.utils.Align
 import com.vhundef.game.MyGame
+import com.vhundef.game.ui.GameScreen
 import kotlin.math.abs
+import kotlin.math.min
 
 
 class Maze(var width: Int, var height: Int) {
-
     private enum class Cell {
-        WALL, SPACE, VISITED, FOCUS
+        WALL, SPACE, VISITED, FOCUS, VOID
     }
 
     private var data = Array(width) { i ->
@@ -30,6 +31,8 @@ class Maze(var width: Int, var height: Int) {
 
     private val rand = java.util.Random()
 
+    var playerRectangle = Rectangle((Gdx.graphics.width - (Gdx.graphics.width / width) * 3).toFloat() - 10, (Gdx.graphics.height - Gdx.graphics.width / width * height) - (Gdx.graphics.width / width * height) / 2.toFloat() + (Gdx.graphics.width / width) * (height - 2), 1f, 1f, Color(1f, 0.5f, 0.5f, 1f))
+
     init {
         generate()
     }
@@ -38,7 +41,6 @@ class Maze(var width: Int, var height: Int) {
 
         val upx = intArrayOf(1, -1, 0, 0)
         val upy = intArrayOf(0, 0, 1, -1)
-
         var dir = rand.nextInt(4)
         var count = 0
         while (count < 4) {
@@ -85,16 +87,17 @@ class Maze(var width: Int, var height: Int) {
         data[2][2] = Cell.SPACE
         carve(2, 2)
         for (x in 0 until width) {
-            data[x][0] = Cell.WALL
-            data[x][height - 1] = Cell.WALL
+            data[x][0] = Cell.VOID
+            data[x][height - 1] = Cell.VOID
         }
         for (y in 0 until height) {
-            data[0][y] = Cell.WALL
-            data[width - 1][y] = Cell.WALL
+            data[0][y] = Cell.VOID
+            data[width - 1][y] = Cell.VOID
         }
         data[2][1] = Cell.SPACE
         data[width - 3][height - 2] = Cell.SPACE
-
+        playerRectangle.width = (Gdx.graphics.width / width).toFloat() / 1.5f
+        playerRectangle.height = playerRectangle.width
         //  data[width - 3][height - 2] = Cell.FOCUS
     }
 
@@ -111,25 +114,25 @@ class Maze(var width: Int, var height: Int) {
                 when {
                     data[x][y] == Cell.WALL -> rects[x][y].color = Color.LIGHT_GRAY
                     data[x][y] == Cell.SPACE -> rects[x][y].color = Color.DARK_GRAY
-                    data[x][y] == Cell.FOCUS -> rects[x][y].color = Color(0f, 1f, 0.5f, 1f)
+                    data[x][y] == Cell.VOID -> rects[x][y].color = Color.WHITE
+                    data[x][y] == Cell.FOCUS -> rects[x][y].color = Color(1f, 0.5f, 0.5f, 1f)
                     else -> rects[x][y].color = Color.GREEN
                 }
                 rects[x][y].draw(batch, 1f)
             }
         }
+        playerRectangle.draw(batch, 1f)
         batch.end()
     }
 
     var done = false
     var visitedTiles = 0
-    var prevX = width - 3
-    var prevY = 0
 
     fun drawEnd(stage: Stage) {
         val labelStart = Label("Start", MyGame.gameSkin)
         labelStart.setFontScale(3f)
         labelStart.setAlignment(Align.center)
-        labelStart.y = ((Gdx.graphics.height - (Gdx.graphics.width / width * height) / 2).toFloat()) + (Gdx.graphics.width / width) / 4
+        labelStart.y = ((Gdx.graphics.height - (Gdx.graphics.width / width * height) / 2).toFloat())
         labelStart.x = ((Gdx.graphics.width - (Gdx.graphics.width / width) * 3).toFloat())
         labelStart.color = Color.BLACK
         stage.addActor(labelStart)
@@ -143,53 +146,156 @@ class Maze(var width: Int, var height: Int) {
         stage.addActor(labelEnd)
     }
 
-    fun checkTile(x: Int, y: Int) {
-        println("Got touch at X: $x Y: $y")
-
-        for (i in 0 until height) {
-            for (j in 0 until width) {
-                if (data[i][(width - 1) - j] == Cell.WALL)
-                    continue
-                if (x >= rects[i][j].x && x <= rects[i][j].x + rects[i][j].width) {
-                    println("X check: Passed")
-                    if (y >= rects[i][j].y && y <= rects[i][j].y + rects[i][j].height) {
-                        println("Y check: Passed")
-                        if (checkIfCanGo(i, j)) {
-                            println("CAN GO")
-                            if (data[i][(width - 1) - j] == Cell.SPACE) {
-                                data[i][(width - 1) - j] = Cell.FOCUS
-                                println("ALL OK")
-                                visitedTiles++
-                                data[prevX][(width - 1) - prevY] = Cell.VISITED
-                                prevX = i
-                                prevY = j
+    var touchX = 0
+    var touchY = 0
+    var newTouch = false
+    private var prevX = width - 3
+    private var prevY = 1
+    private var dt = min(Gdx.graphics.deltaTime, 1 / 60f)
+    fun checkTileN(x: Int, y: Int, gameScreen: GameScreen) {
+        var flag = false
+        if (newTouch) {
+            newTouch = false
+            println("Check tile Called")
+            if (abs(touchX - x) > abs(touchY - y)) {
+                if (touchX > x) {
+                    println("Left")
+                    while (!newTouch && !flag) {
+                        for (i in 0 until width) {
+                            if (playerRectangle.x >= rects[i][prevY].x && playerRectangle.x <= rects[i][prevY].x + rects[i][prevY].height) {
+                                prevX = i + 1
+                                //     println("TIle["+i+"]["+prevY+"] = "+data[i][prevY])
+                                if (data[i][prevY] == Cell.WALL || data[i][prevY] == Cell.VOID) {
+                                    flag = true
+                                    println("Hit something")
+                                    break
+                                }
+                                dt = min(Gdx.graphics.deltaTime, 1 / 60f)
+                                playerRectangle.x -= 0.02f * dt
                                 Gdx.graphics.requestRendering()
-                                if (i == 2 && j == height - 2)
-                                    done = true
-                                return
-
-
-                            } else if (data[i][(width - 1) - j] == Cell.VISITED || data[i][(width - 1) - j] == Cell.FOCUS) {
-                                data[prevX][(width - 1) - prevY] = Cell.VISITED
-                                prevX = i
-                                prevY = j
-                                visitedTiles++
+                                break
                             }
-                        } else {
-                            println("NO Go prevX: $prevX X: $x")
-                            println("prevY: $prevY Y: $y")
                         }
                     }
+                    println("Break")
+                }
+                if (touchX < x) {
+                    println("Right")
+                    while (!newTouch && !flag) {
+                        dt = min(Gdx.graphics.deltaTime, 1 / 60f)
+                        playerRectangle.x += 0.02f * dt
+                        for (i in 0 until width) {
+                            if (playerRectangle.x >= rects[i][prevY].x && playerRectangle.x <= rects[i][prevY].x + rects[i][prevY].height) {
+                                prevX = i
+                                //  println("TIle["+i+"]["+prevY+"] = "+data[i][prevY])
+                                if (data[i + 1][prevY] == Cell.WALL || data[i + 1][prevY] == Cell.VOID) {
+                                    flag = true
+                                    println("Hit something")
+                                    break
+                                }
+                                Gdx.graphics.requestRendering()
+                                break
+                            }
+                        }
+                    }
+                    println("Break")
+                }
+            } else {
+                if (touchY < y) {
+                    println("Up")
+                    while (!newTouch && !flag) {
+                        for (i in 0 until height) {
+                            if (playerRectangle.y >= rects[prevX][i].y && playerRectangle.y <= rects[prevX][i].y + rects[prevX][i].height) {
+                                prevY = i
+                                //  println("TIle["+prevX+"]["+i+"] = "+data[prevX][i])
+                                if (data[prevX][i + 1] == Cell.WALL || data[prevX][i + 1] == Cell.VOID) {
+                                    flag = true
+                                    println("Hit something")
+                                    break
+                                }
+                                dt = min(Gdx.graphics.deltaTime, 1 / 60f)
+                                playerRectangle.y += 0.1f * dt
+                                Gdx.graphics.requestRendering()
+                                break
+                            }
+                        }
+                    }
+                    println("Break")
+                }
+                if (touchY > y) {
+                    println("Down")
+                    while (!newTouch && !flag) {
+                        for (i in 0 until height) {
+                            if (playerRectangle.y >= rects[prevX][i].y && playerRectangle.y <= rects[prevX][i].y + rects[prevX][i].height) {
+                                prevY = i + 1
+                                // println("TIle["+prevX+"]["+i+"] = "+data[prevX][i])
+                                if (data[prevX][i] == Cell.WALL || data[prevX][i] == Cell.VOID) {
+                                    flag = true
+                                    println("Hit something")
+                                    break
+                                }
+                                dt = min(Gdx.graphics.deltaTime, 1 / 60f)
+                                playerRectangle.y -= 0.02f * dt
+                                Gdx.graphics.requestRendering()
+                                break
+                            }
+                        }
+                    }
+                    println("Break")
                 }
             }
         }
     }
 
+    /*
+        fun checkTile(x: Int, y: Int) {
+            println("Got touch at X: $x Y: $y")
+            for (i in 0 until height) {
+                for (j in 0 until width) {
+
+                    if (data[i][(width - 1) - j] == Cell.WALL)
+                        continue
+                    if (x >= rects[i][j].x && x <= rects[i][j].x + rects[i][j].width) {
+                        println("X check: Passed")
+                        if (y >= rects[i][j].y && y <= rects[i][j].y + rects[i][j].height) {
+                            println("Y check: Passed")
+                            if (checkIfCanGo(i, j)) {
+                                println("CAN GO")
+                                if (data[i][(width - 1) - j] == Cell.SPACE) {
+                                    data[i][(width - 1) - j] = Cell.FOCUS
+                                    println("ALL OK")
+                                    visitedTiles++
+                                    data[prevX][(width - 1) - prevY] = Cell.VISITED
+                                    prevX = i
+                                    prevY = j
+                                    Gdx.graphics.requestRendering()
+                                    if (i == 2 && j == height - 2)
+                                        done = true
+                                    return
+
+
+                                } else if (data[i][(width - 1) - j] == Cell.VISITED || data[i][(width - 1) - j] == Cell.FOCUS) {
+                                    data[prevX][(width - 1) - prevY] = Cell.VISITED
+                                    prevX = i
+                                    prevY = j
+                                    visitedTiles++
+                                }
+                            } else {
+                                println("NO Go prevX: $prevX X: $x")
+                                println("prevY: $prevY Y: $y")
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        */
     private fun checkIfCanGo(curX: Int, curY: Int): Boolean {
         if (abs(curX - prevX) == 1 && abs(curY - prevY) == 0)
             return true
         if (abs(curX - prevX) == 0 && abs(curY - prevY) == 1)
             return true
-        return false
+        return true
     }
 }
