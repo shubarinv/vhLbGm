@@ -176,7 +176,7 @@ class Maze(var width: Int, var height: Int) {
                                 }
                                 break
                             }
-                            if (prevX == 2 && prevY <= 3) {
+                            if (prevX == 2 && prevY <= 2) {
                                 done = true
                                 return
                             }
@@ -204,7 +204,7 @@ class Maze(var width: Int, var height: Int) {
                                 }
                                 break
                             }
-                            if (prevX == 2 && prevY <= 3) {
+                            if (prevX == 2 && prevY <= 2) {
                                 done = true
                                 return
                             }
@@ -232,7 +232,7 @@ class Maze(var width: Int, var height: Int) {
                                 }
                                 break
                             }
-                            if (prevX == 2 && prevY <= 3) {
+                            if (prevX == 2 && prevY <= 2) {
                                 done = true
                                 return
                             }
@@ -260,7 +260,7 @@ class Maze(var width: Int, var height: Int) {
                                 }
                                 break
                             }
-                            if (prevX == 2 && prevY <= 3) {
+                            if (prevX == 2 && prevY <= 2) {
                                 done = true
                                 return
                             }
