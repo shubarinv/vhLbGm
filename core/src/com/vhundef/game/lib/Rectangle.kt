@@ -4,9 +4,9 @@ import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
-import com.badlogic.gdx.scenes.scene2d.Actor
+import com.badlogic.gdx.math.Rectangle
 
-class Rectangle(x: Float, y: Float, width: Float, height: Float, color: Color) : Actor() {
+class Rect(x: Float, y: Float, width: Float, height: Float, var color: Color) : Rectangle() {
 
     private var texture: Texture? = null
 
@@ -26,8 +26,7 @@ class Rectangle(x: Float, y: Float, width: Float, height: Float, color: Color) :
         pixmap.dispose()
     }
 
-    override fun draw(batch: Batch, parentAlpha: Float) {
-        val color = color
+    fun draw(batch: Batch, parentAlpha: Float) {
         batch.setColor(color.r, color.g, color.b, color.a * parentAlpha)
         batch.draw(texture, x, y, width, height)
     }
