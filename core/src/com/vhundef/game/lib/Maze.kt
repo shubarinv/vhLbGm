@@ -155,12 +155,12 @@ class Maze(var width: Int, var height: Int) {
     fun checkTileN(x: Int, y: Int, gameScreen: GameScreen) {
         var flag = false
         if (newTouch) {
-            println("start pos X: $prevX Y:$prevY =" + data[prevX][prevY])
+            //      println("start pos X: $prevX Y:$prevY =" + data[prevX][prevY])
             newTouch = false
-            println("Check tile Called")
+            //       println("Check tile Called")
             if (abs(touchX - x) > abs(touchY - y)) {
                 if (touchX > x) {
-                    println("Left")
+                    //             println("Left")
                     while (!newTouch && !flag) {
                         for (i in 1 until width - 1) {
                             if (playerRectangle.overlaps(rects[i][prevY])) {
@@ -170,8 +170,8 @@ class Maze(var width: Int, var height: Int) {
                                     flag = true
                                     prevX = i + 1
                                     playerRectangle.x += 0.02f * dt
-                                    println("Hit " + data[i][prevY])
-                                    println("Pos now X: $prevX Y:$prevY =" + data[prevX][prevY])
+                                    //      println("Hit " + data[i][prevY])
+                                    //      println("Pos now X: $prevX Y:$prevY =" + data[prevX][prevY])
                                     break
                                 }
                                 break
@@ -185,10 +185,10 @@ class Maze(var width: Int, var height: Int) {
                             Gdx.graphics.requestRendering()
                         }
                     }
-                    println("Break")
+                    //             println("Break")
                 }
                 if (touchX < x) {
-                    println("Right")
+                    //           println("Right")
                     while (!newTouch && !flag) {
                         for (i in 1 until width - 2) {
                             if (playerRectangle.overlaps(rects[i][prevY])) {
@@ -198,8 +198,8 @@ class Maze(var width: Int, var height: Int) {
                                     flag = true
                                     prevX = i
                                     playerRectangle.x -= 0.02f * dt
-                                    println("Hit " + data[i + 1][prevY])
-                                    println("Pos now X: $prevX Y:$prevY =" + data[prevX][prevY])
+                                    //     println("Hit " + data[i + 1][prevY])
+                                    //     println("Pos now X: $prevX Y:$prevY =" + data[prevX][prevY])
                                     break
                                 }
                                 break
@@ -213,11 +213,11 @@ class Maze(var width: Int, var height: Int) {
                             Gdx.graphics.requestRendering()
                         }
                     }
-                    println("Break")
+                    //          println("Break")
                 }
             } else {
                 if (touchY < y) {
-                    println("Up")
+                    //          println("Up")
                     while (!newTouch && !flag) {
                         for (i in 1 until height - 1) {
                             if (playerRectangle.overlaps(rects[prevX][i])) {
@@ -226,8 +226,8 @@ class Maze(var width: Int, var height: Int) {
                                 if (data[prevX][i + 1] == Cell.WALL || data[prevX][i + 1] == Cell.VOID) {
                                     flag = true
                                     playerRectangle.y -= 0.02f * dt
-                                    println("Hit " + data[prevX][i + 1])
-                                    println("Pos now X: $prevX Y:$prevY =" + data[prevX][prevY])
+                                    //    println("Hit " + data[prevX][i + 1])
+                                    //     println("Pos now X: $prevX Y:$prevY =" + data[prevX][prevY])
                                     break
                                 }
                                 break
@@ -241,10 +241,10 @@ class Maze(var width: Int, var height: Int) {
                             Gdx.graphics.requestRendering()
                         }
                     }
-                    println("Break")
+                    //         println("Break")
                 }
                 if (touchY > y) {
-                    println("Down")
+                    //            println("Down")
                     while (!newTouch && !flag) {
                         for (i in 1 until height - 1) {
                             if (playerRectangle.overlaps(rects[prevX][i])) {
@@ -254,8 +254,8 @@ class Maze(var width: Int, var height: Int) {
                                     flag = true
                                     prevY = i + 1
                                     playerRectangle.y += 0.02f * dt
-                                    println("Hit " + data[prevX][i])
-                                    println("Pos now X: $prevX Y:$prevY =" + data[prevX][prevY])
+                                    //    println("Hit " + data[prevX][i])
+                                    //    println("Pos now X: $prevX Y:$prevY =" + data[prevX][prevY])
                                     break
                                 }
                                 break
@@ -270,56 +270,11 @@ class Maze(var width: Int, var height: Int) {
 
                         }
                     }
-                    println("Break")
+                    //             println("Break")
                 }
             }
         }
     }
-
-    /*
-        fun checkTile(x: Int, y: Int) {
-            println("Got touch at X: $x Y: $y")
-            for (i in 0 until height) {
-                for (j in 0 until width) {
-
-                    if (data[i][(width - 1) - j] == Cell.WALL)
-                        continue
-                    if (x >= rects[i][j].x && x <= rects[i][j].x + rects[i][j].width) {
-                        println("X check: Passed")
-                        if (y >= rects[i][j].y && y <= rects[i][j].y + rects[i][j].height) {
-                            println("Y check: Passed")
-                            if (checkIfCanGo(i, j)) {
-                                println("CAN GO")
-                                if (data[i][(width - 1) - j] == Cell.SPACE) {
-                                    data[i][(width - 1) - j] = Cell.FOCUS
-                                    println("ALL OK")
-                                    visitedTiles++
-                                    data[prevX][(width - 1) - prevY] = Cell.VISITED
-                                    prevX = i
-                                    prevY = j
-                                    Gdx.graphics.requestRendering()
-                                    if (i == 2 && j == height - 2)
-                                        done = true
-                                    return
-
-
-                                } else if (data[i][(width - 1) - j] == Cell.VISITED || data[i][(width - 1) - j] == Cell.FOCUS) {
-                                    data[prevX][(width - 1) - prevY] = Cell.VISITED
-                                    prevX = i
-                                    prevY = j
-                                    visitedTiles++
-                                }
-                            } else {
-                                println("NO Go prevX: $prevX X: $x")
-                                println("prevY: $prevY Y: $y")
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        */
     private fun checkIfCanGo(curX: Int, curY: Int): Boolean {
         if (abs(curX - prevX) == 1 && abs(curY - prevY) == 0)
             return true
