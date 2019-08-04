@@ -22,7 +22,7 @@ class Maze(var width: Int, var height: Int) {
     }
 
     private var data = Array(width) { i ->
-        Array(height) { i -> Cell.WALL }
+        Array(height) { j -> Cell.WALL }
     }
 
     private val rects = Array(width) { i ->

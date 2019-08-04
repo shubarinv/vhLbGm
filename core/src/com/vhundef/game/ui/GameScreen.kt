@@ -10,34 +10,26 @@ import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.utils.viewport.ScreenViewport
 import com.badlogic.gdx.utils.viewport.Viewport
 import com.vhundef.game.lib.Maze
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 
 class GameScreen(val game: Game, val level: Int) : Screen, InputProcessor {
     override fun show() {
         assert(true)
     }
-
-    internal inner class TouchInfo {
-        var touchX = 0f
-        var touchY = 0f
-        var touched = false
-    }
-
-    private var touch = TouchInfo()
     private val stage: Stage
     var maze: Maze? = null
     private var batch: SpriteBatch? = null
     var touchX = 0
     var touchY = 0
     var ready = false
+    private var killCoroutine=false
     val job: Job = GlobalScope.launch(Dispatchers.IO) {
-        while (true)
+        while (!killCoroutine){
             if (ready)
                 maze!!.checkTileN(touchX, translateCoords(touchY), this@GameScreen)
+        }
+        cancel()
     }
 
     init {
@@ -65,8 +57,10 @@ class GameScreen(val game: Game, val level: Int) : Screen, InputProcessor {
         stage.act()
         stage.draw()
         maze!!.draw(batch!!)
-        if (maze!!.done)
+        if (maze!!.done){
             game.screen = LevelDoneScreen(game, maze!!.visitedTiles)
+            killCoroutine=true
+        }
     }
 
     override fun resize(width: Int, height: Int) {
