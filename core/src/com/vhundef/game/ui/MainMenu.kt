@@ -81,7 +81,7 @@ class MainMenu(private val game: Game) : Screen {
         })
         stage.addActor(quitButton)
 
-        val thx = Label("Thanks for testing!\nV0.6 (Changed controls)", MyGame.gameSkin)
+        val thx = Label("Thanks for testing!\nV0.7 (Changed controls again)", MyGame.gameSkin)
         thx.setFontScale((Gdx.graphics.height / 3f) / 400f)
         thx.setAlignment(Align.center)
         thx.y = (100f).toFloat()

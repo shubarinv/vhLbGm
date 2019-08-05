@@ -10,7 +10,6 @@ import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.utils.viewport.ScreenViewport
 import com.badlogic.gdx.utils.viewport.Viewport
 import com.vhundef.game.lib.Maze
-import kotlinx.coroutines.*
 
 
 class GameScreen(val game: Game, val level: Int) : Screen, InputProcessor {
@@ -24,13 +23,14 @@ class GameScreen(val game: Game, val level: Int) : Screen, InputProcessor {
     var touchY = 0
     var ready = false
     private var killCoroutine=false
+    /*
     val job: Job = GlobalScope.launch(Dispatchers.IO) {
         while (!killCoroutine){
             if (ready)
                 maze!!.checkTileN(touchX, translateCoords(touchY), this@GameScreen)
         }
         cancel()
-    }
+    }*/
 
     init {
         batch = SpriteBatch()
@@ -47,7 +47,7 @@ class GameScreen(val game: Game, val level: Int) : Screen, InputProcessor {
         Gdx.input.inputProcessor = this
         Gdx.graphics.isContinuousRendering = false
         ready = true
-        job.start()
+        // job.start()
 
     }
 
@@ -68,11 +68,11 @@ class GameScreen(val game: Game, val level: Int) : Screen, InputProcessor {
     }
 
     override fun pause() {
-        job.cancel()
+        //  job.cancel()
     }
 
     override fun resume() {
-        job.start()
+        //  job.start()
     }
 
     override fun hide() {
@@ -80,7 +80,7 @@ class GameScreen(val game: Game, val level: Int) : Screen, InputProcessor {
     }
 
     override fun dispose() {
-        job.cancel()
+        //   job.cancel()
         stage.dispose()
     }
 
@@ -100,20 +100,21 @@ class GameScreen(val game: Game, val level: Int) : Screen, InputProcessor {
     }
 
     override fun touchDown(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
-        maze!!.touchX = screenX
-        maze!!.touchY = translateCoords(screenY)
+        /*  maze!!.touchX = screenX
+          maze!!.touchY = translateCoords(screenY)*/
         return true
     }
 
     override fun touchUp(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
-        touchX = screenX
-        touchY = screenY
-        maze!!.newTouch = true
-
+        /*     touchX = screenX
+             touchY = screenY
+             maze!!.newTouch = true
+     */
         return true
     }
 
     override fun touchDragged(screenX: Int, screenY: Int, pointer: Int): Boolean {
+        maze!!.checkTile(screenX, translateCoords(screenY))
         return true
     }
 

@@ -11,9 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.utils.Align
 import com.vhundef.game.MyGame
-import com.vhundef.game.ui.GameScreen
 import kotlin.math.abs
-import kotlin.math.min
 
 
 class Maze(var width: Int, var height: Int) {
@@ -21,17 +19,17 @@ class Maze(var width: Int, var height: Int) {
         WALL, SPACE, VISITED, FOCUS, VOID
     }
 
-    private var data = Array(width) { i ->
-        Array(height) { j -> Cell.WALL }
+    private var data = Array(width) { _ ->
+        Array(height) { _ -> Cell.WALL }
     }
 
-    private val rects = Array(width) { i ->
-        Array<Rect>(height) { j -> Rect(1f, 1f, 1f, 1f, Color.WHITE) }
+    private val rects = Array(width) { _ ->
+        Array<Rect>(height) { _ -> Rect(1f, 1f, 1f, 1f, Color.WHITE) }
     }
 
     private val rand = java.util.Random()
 
-    var playerRectangle = Rect((Gdx.graphics.width - (Gdx.graphics.width / width) * 3).toFloat() - 10, (Gdx.graphics.height - Gdx.graphics.width / width * height) - (Gdx.graphics.width / width * height) / 2.toFloat() + (Gdx.graphics.width / width) * (height - 2), 1f, 1f, Color(1f, 0.5f, 0.5f, 1f))
+    var playerRectangle = Rect((Gdx.graphics.width - (Gdx.graphics.width / width) * 3).toFloat() - 10, (Gdx.graphics.height - Gdx.graphics.width / width * height) - (Gdx.graphics.width / width * height) / 2.toFloat() + (Gdx.graphics.width / width) * (height - 2), 1f, 1f, Color(1f, 0.5f, 0.5f, 0.0f))
 
     init {
         generate()
@@ -146,11 +144,9 @@ class Maze(var width: Int, var height: Int) {
         stage.addActor(labelEnd)
     }
 
-    var touchX = 0
-    var touchY = 0
-    var newTouch = false
     private var prevX = width - 3
     private var prevY = 9
+    /*
     private var dt = min(Gdx.graphics.deltaTime, 1 / 60f)
     fun checkTileN(x: Int, y: Int, gameScreen: GameScreen) {
         var flag = false
@@ -274,12 +270,54 @@ class Maze(var width: Int, var height: Int) {
                 }
             }
         }
+    }*/
+    fun checkTile(x: Int, y: Int) {
+        println("Got touch at X: $x Y: $y")
+
+        for (i in 0 until height) {
+            for (j in 0 until width) {
+                if (data[i][j] == Cell.WALL)
+                    continue
+                if (x >= rects[i][j].x && x <= rects[i][j].x + rects[i][j].width) {
+                    println("X check: Passed")
+                    if (y >= rects[i][j].y && y <= rects[i][j].y + rects[i][j].height) {
+                        println("Y check: Passed")
+                        if (checkIfCanGo(i, j)) {
+                            println("CAN GO")
+                            if (data[i][j] == Cell.SPACE) {
+                                data[i][j] = Cell.FOCUS
+                                println("ALL OK")
+                                visitedTiles++
+                                data[prevX][prevY] = Cell.VISITED
+                                prevX = i
+                                prevY = j
+                                Gdx.graphics.requestRendering()
+                                if (i == 2 && j == 2)
+                                    done = true
+                                return
+
+
+                            } else if (data[i][j] == Cell.VISITED || data[i][j] == Cell.FOCUS) {
+                                data[prevX][prevY] = Cell.VISITED
+                                prevX = i
+                                prevY = j
+                                visitedTiles++
+                            }
+                        } else {
+                            println("NO Go prevX: $prevX X: $i")
+                            println("prevY: $prevY Y: $j")
+                        }
+                    }
+                }
+            }
+        }
     }
+
     private fun checkIfCanGo(curX: Int, curY: Int): Boolean {
         if (abs(curX - prevX) == 1 && abs(curY - prevY) == 0)
             return true
         if (abs(curX - prevX) == 0 && abs(curY - prevY) == 1)
             return true
-        return true
+        return false
     }
 }
