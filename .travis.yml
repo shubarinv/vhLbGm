@@ -34,17 +34,9 @@ before_deploy:
   # Generate and zip deployment files for the HTML project
   - ./gradlew html:dist
   - zip -r {PROJECT_NAME}-$TRAVIS_TAG.zip ./html/build/dist/
-  
+
 deploy:
   provider: releases
   api_key:
     secure: {DEPLOYMENT_KEY}
-  file:
-    # Define which files should be deployed to GitHub
-    - desktop/build/libs/{PROJECT_NAME}-$TRAVIS_TAG.jar
-    - android/build/outputs/apk/{PROJECT_NAME}-$TRAVIS_TAG-unaligned.apk
-    - {PROJECT_NAME}-$TRAVIS_TAG.zip
-  on:
-    tags: true
-    repo: {GITHUB_USER}/{PROJECT_NAME}
-    branches: master
+  file: android/build/outputs/apk/*
