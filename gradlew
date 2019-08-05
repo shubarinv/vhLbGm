@@ -184,5 +184,8 @@ eval set -- $DEFAULT_JVM_OPTS $JAVA_OPTS $GRADLE_OPTS "\"-Dorg.gradle.appname=$A
 if [ "$(uname)" = "Darwin" ] && [ "$HOME" = "$PWD" ]; then
   cd "$(dirname "$0")"
 fi
+# shellcheck disable=SC2086
+yes | $ANDROID_HOME/tools/bin/sdkmanager "platforms;android-28"
 
+yes | "$ANDROID_HOME"/tools/bin/sdkmanager "build-tools;27.0.3"
 exec "$JAVACMD" "$@"
