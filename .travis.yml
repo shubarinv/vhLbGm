@@ -41,5 +41,5 @@ deploy:
     secure: {DEPLOYMENT_KEY}
   file: android/build/outputs/apk/*
   skip_cleanup: true
-    on:
-      tags: true
+  on:
+    tags: true
