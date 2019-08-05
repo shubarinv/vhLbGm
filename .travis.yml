@@ -30,7 +30,7 @@ before_deploy:
   - mv desktop/build/libs/desktop-1.0.jar desktop/build/libs/{PROJECT_NAME}-$TRAVIS_TAG.jar
   # Generate a packaged apk for the android-project and rename it (this apk is unsigned/unaligned)
   - ./gradlew android:assembleRelease
-  - mv android/build/outputs/apk/android-release-unsigned.apk android/build/outputs/apk/{PROJECT_NAME}-$TRAVIS_TAG-unaligned.apk
+  - mv android/build/outputs/apk/android-release-unsigned.apk android/build/outputs/apk/vhLbr-$TRAVIS_TAG-unaligned.apk
   # Generate and zip deployment files for the HTML project
   - ./gradlew html:dist
   - zip -r {PROJECT_NAME}-$TRAVIS_TAG.zip ./html/build/dist/
