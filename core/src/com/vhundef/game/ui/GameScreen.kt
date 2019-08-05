@@ -100,8 +100,7 @@ class GameScreen(val game: Game, val level: Int) : Screen, InputProcessor {
     }
 
     override fun touchDown(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
-        /*  maze!!.touchX = screenX
-          maze!!.touchY = translateCoords(screenY)*/
+        maze!!.checkTileRedux(screenX, translateCoords(screenY))
         return true
     }
 
@@ -114,7 +113,7 @@ class GameScreen(val game: Game, val level: Int) : Screen, InputProcessor {
     }
 
     override fun touchDragged(screenX: Int, screenY: Int, pointer: Int): Boolean {
-        maze!!.checkTile(screenX, translateCoords(screenY))
+        //  maze!!.checkTile(screenX, translateCoords(screenY))
         return true
     }
 

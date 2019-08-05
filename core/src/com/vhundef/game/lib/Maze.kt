@@ -145,7 +145,7 @@ class Maze(var width: Int, var height: Int) {
     }
 
     private var prevX = width - 3
-    private var prevY = 9
+    private var prevY = height - 2
     /*
     private var dt = min(Gdx.graphics.deltaTime, 1 / 60f)
     fun checkTileN(x: Int, y: Int, gameScreen: GameScreen) {
@@ -311,6 +311,97 @@ class Maze(var width: Int, var height: Int) {
                 }
             }
         }
+    }
+
+    fun checkTileRedux(x: Int, y: Int) {
+        println("Got touch at X: $x Y: $y")
+
+        for (i in 0 until height) {
+            for (j in 0 until width) {
+                if (data[i][j] == Cell.WALL)
+                    continue
+                if (x >= rects[i][j].x && x <= rects[i][j].x + rects[i][j].width) {
+                    println("X check: Passed")
+                    if (y >= rects[i][j].y && y <= rects[i][j].y + rects[i][j].height) {
+                        println("Y check: Passed")
+
+                        if (whereToGo(i, j) == -1) {
+                            println("Moving left from:$prevX to: $i")
+                            for (k in prevX downTo i - 1 step 1) {
+                                if (k < i) break
+                                data[k][j] = Cell.FOCUS
+                                data[prevX][prevY] = Cell.VISITED
+                                prevX = k
+                                if (data[k - 1][j] == Cell.WALL) {
+                                    println("Break left cause wall will be next")
+                                    break
+                                }
+
+                            }
+                        } else if (whereToGo(i, j) == 1) {
+                            println("Moving right from:$prevX to: $i")
+                            for (k in prevX until i + 1) {
+                                if (k > i) break
+                                data[k][j] = Cell.FOCUS
+                                data[prevX][prevY] = Cell.VISITED
+                                prevX = k
+                                if (data[k + 1][j] == Cell.WALL) {
+                                    println("Break right cause wall will be next")
+                                    break
+                                }
+
+                            }
+                        } else if (whereToGo(i, j) == -2) {
+                            println("Moving down from:$prevY to: $j")
+                            for (k in prevY downTo j - 1 step 1) {
+                                if (k < j) break
+                                data[i][k] = Cell.FOCUS
+                                data[prevX][prevY] = Cell.VISITED
+                                prevY = k
+                                if (data[i][k - 1] == Cell.WALL) {
+                                    println("Break down cause wall will be next")
+                                    break
+                                }
+
+                            }
+
+                        } else if (whereToGo(i, j) == 2) {
+                            println("Moving up from:$prevY to: $j")
+                            for (k in prevY until j + 1) {
+                                if (k > j) break
+                                data[i][k] = Cell.FOCUS
+                                data[prevX][prevY] = Cell.VISITED
+                                prevY = k
+                                if (data[i][k + 1] == Cell.WALL) {
+                                    println("Break up cause wall will be next")
+                                    break
+                                }
+
+                            }
+                        }
+                        if (prevX == 2 && prevY == 1) {
+                            done = true
+                        }
+                        println("stoped at X:$prevX Y:$prevY")
+                        break
+                    }
+                }
+            }
+        }
+    }
+
+    private fun whereToGo(curX: Int, curY: Int): Int { // Will return (0) if can't go. ((-1)neg;(1)pos) if can go by x axis. ((-2)neg;(2)pos) if can go by y axis.
+        println("checking if can go from X:$prevX Y:$prevY to X:$curX Y:$curY")
+        return if (curX - prevX >= 1 && abs(curY - prevY) == 0)
+            1
+        else if (curX - prevX <= -1 && abs(curY - prevY) == 0)
+            -1
+        else if (abs(curX - prevX) == 0 && curY - prevY >= 1)
+            2
+        else if (abs(curX - prevX) == 0 && curY - prevY <= -1)
+            -2
+        else 0
+
     }
 
     private fun checkIfCanGo(curX: Int, curY: Int): Boolean {
